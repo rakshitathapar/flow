@@ -4,11 +4,21 @@ import { motion } from "framer-motion";
 // Skill icons fly from the centre of the screen into the backpack (top-right).
 
 export default function SkillFly({ skills, onDone }) {
+  const onDoneRef = React.useRef(onDone);
+
+  React.useEffect(() => {
+    onDoneRef.current = onDone;
+  }, [onDone]);
+
   React.useEffect(() => {
     if (!skills.length) return;
-    const t = setTimeout(onDone, 2400);
+
+    const t = setTimeout(() => {
+      onDoneRef.current?.();
+    }, 2400);
+
     return () => clearTimeout(t);
-  }, [skills]);
+  }, [skills.length]);
   if (!skills.length) return null;
   const tx = () =>
     typeof window !== "undefined" ? window.innerWidth - 74 : 300;

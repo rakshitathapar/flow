@@ -20,7 +20,7 @@ export default function WalkScene() {
       clearTimeout(t);
       clearInterval(steps);
     };
-  }, []);
+  }, [dispatch]);
 
   return (
     <div

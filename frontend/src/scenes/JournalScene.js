@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useGame } from "../game/store";
 import { ART } from "../data/art";
@@ -28,12 +28,12 @@ export default function JournalScene() {
   const [capIdx, setCapIdx] = useState(-1);
   const skipRef = useRef(false);
 
-  const finish = () => {
+  const finish = useCallback(() => {
     if (skipRef.current) return;
     skipRef.current = true;
     sfx("chime");
     dispatch({ type: "ENTER_WORLD", skipWalk: true });
-  };
+  }, [dispatch]);
 
   // World sequence: balloon arrives, then she starts walking.
   useEffect(() => {
@@ -78,7 +78,7 @@ export default function JournalScene() {
       timers.forEach(clearTimeout);
       clearInterval(fp);
     };
-  }, [step]);
+  }, [step, finish]);
 
   return (
     <div

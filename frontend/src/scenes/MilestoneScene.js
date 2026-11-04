@@ -73,8 +73,7 @@ export default function MilestoneScene() {
       clearTimeout(done);
       clearInterval(walkT);
     };
-  }, [state.stage, state.mi]);
-
+  }, [state.stage, state.mi, state.skipWalk, dispatch]);
   // balloon arrival animation
   useEffect(() => {
     if (state.stage !== "balloon" || !state.balloonPending) return;
@@ -82,8 +81,7 @@ export default function MilestoneScene() {
     setBalloonIn(true);
     const t = setTimeout(() => dispatch({ type: "BALLOON_DONE" }), 3100);
     return () => clearTimeout(t);
-  }, [state.stage, state.balloonPending]);
-
+  }, [state.stage, state.balloonPending, dispatch]);
   const isFirst = state.mi === 0;
 
   return (
