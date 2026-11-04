@@ -365,12 +365,12 @@ export default function Archive() {
               <button data-testid="profile-email" onClick={() => PROFILE.links.email && window.location.assign(`mailto:${PROFILE.links.email}`)}
                 disabled={!PROFILE.links.email} className="ink-border bg-[#fdf6e9] p-5 text-left min-h-32 disabled:opacity-70">
                 <div className="font-display text-xl font-extrabold">Email</div>
-                <div className="font-hand text-xl text-[#7a4a3a] mt-2">Get in touch</div>
+                <div className="font-hand text-xl text-[#7a4a3a] mt-2">Get in touch: rakshitathapar25@gmail.com</div>
               </button>
               <button data-testid="profile-phone" onClick={() => PROFILE.links.phone && window.location.assign(`tel:${PROFILE.links.phone}`)}
                 disabled={!PROFILE.links.phone} className="ink-border bg-[#fdf6e9] p-5 text-left min-h-32 disabled:opacity-70">
                 <div className="font-display text-xl font-extrabold">Phone Number</div>
-                <div className="font-hand text-xl text-[#7a4a3a] mt-2">Let's talk</div>
+                <div className="font-hand text-xl text-[#7a4a3a] mt-2">Let's talk: +91 9990960383</div>
               </button>
             </div>
             <p className="font-hand text-lg text-[#6b5d49] mt-4">The links will open directly when added.</p>

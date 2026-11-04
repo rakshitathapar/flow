@@ -10,7 +10,7 @@ export const MILESTONES = [
     place: "Home & Playground",
     location: "A residential society · late 1990s energy",
     art: "playground",
-    sign: "BEL",
+    sign: "BEL Colony",
     arrival:
       "A small pin drops on an ordinary afternoon. A girl with a backpack stands up, and a single red balloon finds her wrist.",
     intro:
@@ -37,7 +37,7 @@ export const MILESTONES = [
     n: 2,
     title: "The Things We Learn",
     place: "School · The Library",
-    location: "School No. 23, Library Wing",
+    location: "Bal Bharati, Library Wing",
     art: "school",
     sign: "SCHOOL · THIS WAY",
     arrival:

@@ -522,5 +522,5 @@ export const PROFILE = {
     "Brand marketing, product innovation, e-commerce, commercial strategy, performance marketing and consumer understanding.",
   ],
   contact: [],
-  links: { resume: "", creativePortfolio: "", email: "", phone: "" },
+  links: { resume: "https://drive.google.com/file/d/1hbROcxKoDhnuwGuQKqaft9vassJQEOlt/view?usp=sharing", creativePortfolio: "https://drive.google.com/drive/folders/1H7QYKpikDd2kUVwTU-LpYM57skphRcno", email: "rakshitathapar25@gmail.com", phone: "+91 9990960383" },
 };
