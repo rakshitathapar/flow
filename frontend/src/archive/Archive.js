@@ -18,10 +18,10 @@ import { useGame } from "../game/store";
 import { sfx } from "../game/audio";
 
 const MARQUEE = [
-  "every place teaches you something",
-  "every experience leaves something behind",
-  "you carry all of it into whatever comes next",
-  "still figuring it out · still becoming",
+  "OH, LOOK. IT'S ME.",
+  "MADE OF MANY THINGS.",
+  "CURRENTLY CONNECTING THE DOTS.",
+  "A WORK IN PROGRESS. ALWAYS.",
 ];
 
 function Trophy({ a, onClick }) {
@@ -60,10 +60,11 @@ export default function Archive() {
   const [skill, setSkill] = useState(null);
   const [project, setProject] = useState(null);
   const [tab, setTab] = useState("backpack");
+  const [creativeOpen, setCreativeOpen] = useState(false);
   const owned = SKILLS.filter((s) => state.skills[s.id]);
 
   useEffect(() => {
-    const lenis = new Lenis({ duration: 1.15, smoothWheel: true });
+    const lenis = new Lenis({ duration: 0.8, smoothWheel: true, wheelMultiplier: 0.75, touchMultiplier: 1.1 });
     let raf;
     const loop = (t) => {
       lenis.raf(t);
@@ -110,7 +111,7 @@ export default function Archive() {
                 className="font-display text-4xl sm:text-6xl font-extrabold leading-[1.02] text-[#fdf6e9] drop-shadow-[0_3px_0_rgba(43,38,32,0.9)]"
                 data-testid="archive-title"
               >
-                EVERYTHING I PICKED UP ALONG THE WAY.
+                A LITTLE BIT OF EVERYTHING THAT MADE ME.
               </motion.h1>
               <motion.p
                 initial={{ opacity: 0 }}
@@ -118,7 +119,7 @@ export default function Archive() {
                 transition={{ delay: 0.4 }}
                 className="font-body text-lg sm:text-xl text-[#fdf6e9] mt-4 max-w-xl drop-shadow-[0_2px_0_rgba(43,38,32,0.9)]"
               >
-                “{PROFILE.positioning}” · {PROFILE.lines.join(" · ")}
+                Explore the projects, skills, experiences and milestones collected along the way.
               </motion.p>
             </div>
             <motion.div
@@ -345,53 +346,57 @@ export default function Archive() {
           </section>
         )}
 
-        {/* ── PROFILE & CONTACT ── */}
+        {/* ── ABOUT & CONTACT ── */}
         {tab === "profile" && (
-          <section className="py-10 max-w-3xl" data-testid="archive-profile">
-            <h2 className="font-display text-3xl sm:text-4xl font-extrabold">
-              About & contact
-            </h2>
-            <p className="font-hand text-2xl text-[#c74a3c] mt-3">
-              “{PROFILE.positioning}”
-            </p>
-            <ul className="mt-4 font-body text-lg leading-relaxed list-disc pl-5">
-              {PROFILE.background.map((b, i) => (
-                <li key={i} className="mt-1.5">
-                  {b}
-                </li>
-              ))}
-            </ul>
-            <div
-              className="ink-border bg-[#fdf6e9] p-5 mt-8"
-              data-testid="contact-card"
-            >
-              <div className="font-display font-extrabold text-xl">
-                Get in touch
-              </div>
-              <div className="mt-3 flex flex-col gap-2.5">
-                {PROFILE.contact.map((c) => (
-                  <div
-                    key={c.label}
-                    className="flex flex-wrap items-baseline gap-2 font-body text-lg"
-                  >
-                    <b>{c.label}:</b>{" "}
-                    <span className="placeholder-edit">{c.value}</span>
-                  </div>
-                ))}
-              </div>
-              <p className="font-hand text-lg text-[#6b5d49] mt-3">
-                Dashed boxes are placeholders — edit them in the content file,
-                never invented for you.
-              </p>
+          <section className="py-10" data-testid="archive-profile">
+            <h2 className="font-display text-3xl sm:text-4xl font-extrabold">About & Contact</h2>
+            <p className="font-hand text-2xl text-[#c74a3c] mt-3">“{PROFILE.positioning}”</p>
+            <div className="mt-7 grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <button data-testid="profile-resume" onClick={() => PROFILE.links.resume && window.open(PROFILE.links.resume, "_blank", "noopener,noreferrer")}
+                disabled={!PROFILE.links.resume} className="ink-border bg-[#fdf6e9] p-5 text-left min-h-32 disabled:opacity-70">
+                <div className="font-display text-xl font-extrabold">Resume</div>
+                <div className="font-hand text-xl text-[#7a4a3a] mt-2">View my actual CV</div>
+              </button>
+              <button data-testid="profile-creative-portfolio" onClick={() => setCreativeOpen(true)}
+                className="ink-border bg-[#fdf6e9] p-5 text-left min-h-32">
+                <div className="font-display text-xl font-extrabold">Creative Portfolio</div>
+                <div className="font-hand text-xl text-[#7a4a3a] mt-2">Here are some other cool things I've made.</div>
+              </button>
+              <button data-testid="profile-email" onClick={() => PROFILE.links.email && window.location.assign(`mailto:${PROFILE.links.email}`)}
+                disabled={!PROFILE.links.email} className="ink-border bg-[#fdf6e9] p-5 text-left min-h-32 disabled:opacity-70">
+                <div className="font-display text-xl font-extrabold">Email</div>
+                <div className="font-hand text-xl text-[#7a4a3a] mt-2">Get in touch: rakshitathapar25@gmail.com</div>
+              </button>
+              <button data-testid="profile-phone" onClick={() => PROFILE.links.phone && window.location.assign(`tel:${PROFILE.links.phone}`)}
+                disabled={!PROFILE.links.phone} className="ink-border bg-[#fdf6e9] p-5 text-left min-h-32 disabled:opacity-70">
+                <div className="font-display text-xl font-extrabold">Phone Number</div>
+                <div className="font-hand text-xl text-[#7a4a3a] mt-2">Let's talk: +91 9990960383</div>
+              </button>
             </div>
+            <p className="font-hand text-lg text-[#6b5d49] mt-4">The links will open directly when added.</p>
           </section>
         )}
+        {creativeOpen && (
+          <div className="fixed inset-0 z-[100] flex items-center justify-center bg-[rgba(43,38,32,.62)] p-4" role="dialog" aria-modal="true">
+            <div className="paper-card w-full max-w-lg p-6">
+              <button className="btn-ghost float-right" onClick={() => setCreativeOpen(false)}>Close</button>
+              <h3 className="font-display text-2xl font-extrabold">A little more of my creative side</h3>
+              <p className="font-body text-lg mt-3">And here's what I get up to when I'm not doing marketing — a few other things I've made, imagined and put out into the world.</p>
+              {PROFILE.links.creativePortfolio ? (
+                <a className="btn-hand btn-red mt-5 inline-flex" href={PROFILE.links.creativePortfolio} target="_blank" rel="noreferrer">Explore my creative portfolio</a>
+              ) : (
+                <p className="font-hand text-lg text-[#7a4a3a] mt-4">Creative portfolio link to be added.</p>
+              )}
+            </div>
+          </div>
+        )}
+
       </main>
 
       <footer className="border-t-[2.5px] border-[#2b2620] bg-[#2b2620] text-[#fdf6e9] mt-10">
         <div className="max-w-6xl mx-auto px-6 py-10 text-center">
           <div className="font-display text-3xl font-extrabold">
-            Still figuring it out. Still becoming.
+            Always becoming.
           </div>
           <button
             data-testid="footer-restart"

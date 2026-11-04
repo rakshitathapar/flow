@@ -14,7 +14,7 @@ function IconBtn({ onClick, testid, children, title, active }) {
       title={title}
       data-testid={testid}
       onClick={onClick}
-      className="btn-hand !p-2 !shadow-[2px_3px_0_rgba(43,38,32,.9)]"
+      className="btn-hand !p-3 sm:!p-3 !shadow-[2px_3px_0_rgba(43,38,32,.9)]"
       style={active ? { background: "#c74a3c", color: "#fdf6e9" } : undefined}
     >
       {children}
@@ -41,32 +41,27 @@ export default function HUD() {
   return (
     <>
       <div className="fixed top-0 left-0 right-0 z-[70] flex items-start justify-between p-2 sm:p-3 pointer-events-none">
-        {/* progress pips */}
-        <div
-          className="paper-card pointer-events-auto flex items-center gap-1.5 px-3 py-2"
-          style={{ transform: "rotate(-0.6deg)" }}
-          data-testid="hud-progress"
-        >
+        {/* balloon-shaped milestone progress */}
+        <div className="paper-card pointer-events-auto flex items-center gap-2 px-3 py-2" style={{ transform: "rotate(-0.6deg)" }} data-testid="hud-progress">
           {MILESTONES.map((m, i) => {
             const done = state.completed.includes(m.id);
             const cur = i === state.mi && state.phase !== "archive";
+            const active = done || cur;
             return (
-              <span
-                key={m.id}
-                title={`${m.n}. ${m.title}`}
-                className="inline-block rounded-full border-2 border-[#2b2620]"
-                style={{
-                  width: 11,
-                  height: 11,
-                  background: done ? "#c74a3c" : cur ? "#e8a33d" : "#e4d9c3",
-                  animation: cur ? "pulseSoft 2s infinite" : undefined,
-                }}
-              />
+              <span key={m.id} title={`${m.n}. ${m.title}`} className="relative inline-flex items-center justify-center"
+                style={{ width: 19, height: 25, opacity: active ? 1 : .45 }}>
+                <svg width="19" height="25" viewBox="0 0 19 25" aria-hidden="true">
+                  <ellipse cx="9.5" cy="8.5" rx="7.5" ry="8" fill={done ? "#c74a3c" : cur ? "#e8a33d" : "#e4d9c3"} stroke="#2b2620" strokeWidth="1.5"/>
+                  <path d="M7 16 L9.5 19 L12 16" fill={done ? "#c74a3c" : cur ? "#e8a33d" : "#e4d9c3"} stroke="#2b2620" strokeWidth="1"/>
+                  <path d="M9.5 19 Q7 21 10 24" fill="none" stroke="#2b2620" strokeWidth="1"/>
+                </svg>
+                {cur && <span className="absolute inset-0 rounded-full animate-ping border border-[#e8a33d] opacity-40"/>}
+              </span>
             );
           })}
-          <span className="ml-1 hidden sm:inline font-hand text-lg leading-none text-[#6b5d49]">
-            {ms ? `Ch. ${ms.n}` : ""}
-          </span>
+          {state.stage !== "game" && <span className="ml-1 hidden sm:inline font-hand text-lg leading-none text-[#6b5d49]">Chapter {ms ? ms.n : ""}</span>}
+          <button data-testid="hud-back-button" title="Go back" className="btn-ghost !px-2 !py-1 text-base"
+            onClick={() => dispatch({ type: "BACK_SCREEN" })}>← Back</button>
         </div>
         <div className="flex items-center gap-2 pointer-events-auto">
           <div
@@ -84,7 +79,7 @@ export default function HUD() {
           </div>
           <IconBtn
             testid="hud-evidence-button"
-            title="Journey & evidence"
+            title="Open Map"
             onClick={() => setMapOpen(true)}
           >
             <svg
@@ -336,8 +331,13 @@ export default function HUD() {
                   return (
                     <div
                       key={m.id}
-                      className={`ink-border p-3 ${cur ? "bg-[#fdf0d5]" : "bg-[#fdf6e9]"}`}
-                      style={{ opacity: done || cur ? 1 : 0.62 }}
+                      role="button"
+                      tabIndex={done || cur ? 0 : -1}
+                      aria-disabled={!done && !cur}
+                      onClick={() => { if (done || cur) { setMapOpen(false); dispatch({ type: "GO_TO_MILESTONE", index: m.n - 1 }); } }}
+                      onKeyDown={(e) => { if ((e.key === "Enter" || e.key === " ") && (done || cur)) { setMapOpen(false); dispatch({ type: "GO_TO_MILESTONE", index: m.n - 1 }); } }}
+                      className={`ink-border p-3 w-full text-left ${cur ? "bg-[#fdf0d5]" : "bg-[#fdf6e9]"} ${done || cur ? "cursor-pointer" : "cursor-not-allowed"}`}
+                      style={{ opacity: done || cur ? 1 : 0.45 }}
                       data-testid={`map-milestone-${m.id}`}
                     >
                       <div className="flex items-center gap-2 flex-wrap">

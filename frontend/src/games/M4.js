@@ -27,6 +27,7 @@ const PIECES = [
 ];
 
 export function BuildBusiness({ onDone }) {
+  const [shuffledPieces] = useState(() => [...PIECES].sort(() => Math.random() - 0.5));
   const [placed, setPlaced] = useState([]);
   const [sel, setSel] = useState(null);
   const [hint, setHint] = useState(null);
@@ -60,7 +61,7 @@ export function BuildBusiness({ onDone }) {
         className="scene-bg opacity-25"
         style={{ backgroundImage: "url(/art/bschool-classroom.jpg)" }}
       />
-      <div className="relative flex-1 flex flex-col p-3 gap-3 overflow-y-auto nice-scroll">
+      <div className="relative flex-1 flex flex-col w-full max-w-5xl mx-auto px-4 sm:px-8 py-4 gap-4 overflow-y-auto nice-scroll">
         {/* the board */}
         <div
           className="ink-border bg-[#fdf6e9] p-3"
@@ -111,7 +112,7 @@ export function BuildBusiness({ onDone }) {
             Pieces on the table {sel ? "— now tap its slot" : "— tap one"}:
           </div>
           <div className="flex flex-wrap gap-2">
-            {PIECES.map((p) =>
+            {shuffledPieces.map((p) =>
               placed.includes(p.id) ? null : (
                 <button
                   key={p.id}
@@ -190,6 +191,7 @@ const BUDGET = 15000;
 
 export function IndependentLife({ onDone }) {
   const [picked, setPicked] = useState([]);
+  const [submitted, setSubmitted] = useState(false);
   const spent = picked.reduce(
     (s, id) => s + ITEMS.find((i) => i.id === id).cost,
     0,
@@ -214,22 +216,23 @@ export function IndependentLife({ onDone }) {
         className="scene-bg opacity-25"
         style={{ backgroundImage: "url(/art/apartment-room.jpg)" }}
       />
-      <div className="relative flex-1 flex flex-col p-3 gap-3 overflow-y-auto nice-scroll">
+      <div className="relative flex-1 flex flex-col w-full max-w-5xl mx-auto px-4 sm:px-8 py-3 gap-3 overflow-y-auto nice-scroll">
         {/* budget bar */}
         <div
-          className="paper-card px-4 py-2.5"
+          className="paper-card sticky top-0 z-20 px-4 py-2.5"
           style={{ transform: "rotate(-0.4deg)" }}
           data-testid="budget-bar"
         >
           <div className="flex items-center justify-between font-display font-extrabold">
-            <span>First flat budget: ₹15,000</span>
+            <span>Budget remaining</span>
             <span
               style={{ color: over ? "#c74a3c" : "#2a7f79" }}
-              data-testid="budget-spent"
+              data-testid="budget-remaining"
             >
-              ₹{spent.toLocaleString("en-IN")}
+              ₹{Math.max(0, BUDGET - spent).toLocaleString("en-IN")} left
             </span>
           </div>
+          <div className="font-body text-xs sm:text-sm mt-1" data-testid="budget-spent">Spent ₹{spent.toLocaleString("en-IN")} of ₹{BUDGET.toLocaleString("en-IN")}</div>
           <div className="mt-1.5 h-4 rounded-full border-2 border-[#2b2620] bg-[#f1e8d2] overflow-hidden">
             <div
               className="h-full transition-all"
@@ -307,37 +310,21 @@ export function IndependentLife({ onDone }) {
           style={{ opacity: canSettle ? 1 : 0.55 }}
           onClick={() => {
             if (!canSettle) return;
+            setSubmitted(true);
             sfx("tada");
           }}
         >
-          {over
-            ? "Over budget — swap something"
-            : zonesFilled
-              ? "Settle in"
-              : "Every zone needs at least one thing"}
+          {over ? "Over budget — swap something" : submitted ? "Submitted" : canSettle ? "Submit your budget" : "Every zone needs at least one thing"}
         </button>
       </div>
 
-      {canSettle && spent <= BUDGET && zonesFilled && (
-        <SettleGuard picked={picked} onDone={onDone} />
+      {submitted && canSettle && (
+        <DoneOverlay title="Home. On budget."
+          line="Rest, work, kitchen, a corner that's just nice — prioritisation, learned at ₹15,000 a month."
+          onContinue={onDone} />
       )}
     </div>
   );
-}
-
-function SettleGuard({ picked, onDone }) {
-  const [armed, setArmed] = useState(false);
-  React.useEffect(() => {
-    const t = setTimeout(() => setArmed(true), 50);
-    return () => clearTimeout(t);
-  }, []);
-  return armed ? (
-    <DoneOverlay
-      title="Home. On budget."
-      line="Rest, work, kitchen, a corner that's just nice — prioritisation, learned at ₹15,000 a month."
-      onContinue={onDone}
-    />
-  ) : null;
 }
 
 // MILESTONE 4c — The Product Launch Board (ITC CandyMan Fantastik).

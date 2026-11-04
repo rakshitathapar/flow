@@ -150,6 +150,25 @@ function reducer(state, action) {
         stage: "arrive",
         walkArt: null,
       };
+    case "GO_TO_MILESTONE":
+      return {
+        ...state,
+        phase: "scene",
+        mi: action.index,
+        gi: 0,
+        stage: "title",
+        walkArt: null,
+        skipWalk: false,
+        panels: { ...initialState.panels },
+      };
+    case "BACK_SCREEN":
+      if (state.phase === "scene" && state.stage === "game")
+        return { ...state, stage: "title" };
+      if (state.phase === "scene" && state.stage === "title" && state.gi > 0)
+        return { ...state, gi: state.gi - 1, stage: "title" };
+      if (state.phase === "scene" && state.mi > 0)
+        return { ...state, mi: state.mi - 1, gi: 0, stage: "title" };
+      return state;
     case "END_CHOICE":
       return { ...state, endingChoice: action.choice };
     case "RELEASE_BALLOONS":

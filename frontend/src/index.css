@@ -147,3 +147,7 @@ body {
 .marquee-track { display: flex; width: max-content; animation: marqueeX 38s linear infinite; }
 
 ::selection { background: var(--mustard); color: var(--ink); }
+
+/* Accessible, predictable scrolling for trackpads, wheels and touch screens. */
+.nice-scroll { overscroll-behavior: contain; -webkit-overflow-scrolling: touch; }
+button, [role="button"] { touch-action: manipulation; }

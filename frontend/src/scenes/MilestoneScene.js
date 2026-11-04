@@ -73,17 +73,15 @@ export default function MilestoneScene() {
       clearTimeout(done);
       clearInterval(walkT);
     };
-  }, [state.stage, state.mi]);
-
+  }, [state.stage, state.mi, state.skipWalk, dispatch]);
   // balloon arrival animation
   useEffect(() => {
     if (state.stage !== "balloon" || !state.balloonPending) return;
     sfx("balloon");
     setBalloonIn(true);
-    const t = setTimeout(() => dispatch({ type: "BALLOON_DONE" }), 3800);
+    const t = setTimeout(() => dispatch({ type: "BALLOON_DONE" }), 3100);
     return () => clearTimeout(t);
-  }, [state.stage, state.balloonPending]);
-
+  }, [state.stage, state.balloonPending, dispatch]);
   const isFirst = state.mi === 0;
 
   return (
@@ -99,8 +97,8 @@ export default function MilestoneScene() {
         transition={{ duration: 2 }}
       />
 
-      {/* signpost painted into scene */}
-      <div className="absolute top-[16%] left-1/2 -translate-x-1/2 pointer-events-none">
+      {/* chapter signpost — visible at chapter arrival and close, never over active gameplay */}
+      {state.stage !== "game" && <div className="absolute top-[16%] left-1/2 -translate-x-1/2 pointer-events-none">
         <svg width="300" height="86" viewBox="0 0 300 86" className="wobble-sm">
           <path
             d="M 150 84 L 154 34"
@@ -127,7 +125,7 @@ export default function MilestoneScene() {
             {ms.sign}
           </text>
         </svg>
-      </div>
+      </div>}
 
       {/* the girl */}
       <motion.div
@@ -139,7 +137,7 @@ export default function MilestoneScene() {
         <Character
           stage={state.mi}
           walking={state.stage === "arrive"}
-          balloons={state.balloons + (balloonIn ? 1 : 0)}
+          balloons={state.balloons}
           width={150}
           className="drop-shadow-[0_8px_0_rgba(43,38,32,0.22)]"
         />
@@ -162,7 +160,7 @@ export default function MilestoneScene() {
         <motion.div
           className="absolute z-20"
           initial={{ top: "-12%", left: "78%", opacity: 0 }}
-          animate={{ top: "52%", left: "52%", opacity: 1 }}
+          animate={{ top: "68%", left: "39%", opacity: 1, scale: 0.72 }}
           transition={{ duration: 2.6, ease: "easeInOut" }}
         >
           <svg width="72" height="100" viewBox="0 0 72 100">

@@ -6,12 +6,11 @@ export const MILESTONES = [
   {
     id: "first-things",
     n: 1,
-    title: "The First Things",
+    title: "The Playground",
     place: "Home & Playground",
     location: "A residential society · late 1990s energy",
-    age: "5",
     art: "playground",
-    sign: "SECTOR 7 PARK",
+    sign: "BEL Colony",
     arrival:
       "A small pin drops on an ordinary afternoon. A girl with a backpack stands up, and a single red balloon finds her wrist.",
     intro:
@@ -38,8 +37,7 @@ export const MILESTONES = [
     n: 2,
     title: "The Things We Learn",
     place: "School · The Library",
-    location: "School No. 23, Library Wing",
-    age: "13",
+    location: "Bal Bharati, Library Wing",
     art: "school",
     sign: "SCHOOL · THIS WAY",
     arrival:
@@ -80,12 +78,11 @@ export const MILESTONES = [
   {
     id: "art-of-observing",
     n: 3,
-    title: "The Art of Observing",
+    title: "Undergraduate Studies",
     place: "Undergraduate · Psychology",
-    location: "Vivekananda College, University of Delhi",
-    age: "18",
+    location: "University of Delhi",
     art: "college",
-    sign: "VIVEKANANDA COLLEGE",
+    sign: "UNIVERSITY OF DELHI",
     arrival:
       "Red brick, summer light, corridors that echo. In the psychology department, a room is waiting to be read like a case study.",
     intro: "People leave traces everywhere. In this room, six of them matter.",
@@ -95,7 +92,7 @@ export const MILESTONES = [
         key: "observation",
         title: "The Observation Room",
         tagline: "A psychology student's room, in five clues.",
-        how: "Read a clue, then tap the object it describes. Found objects can be connected — some things belong together.",
+        how: "Look around the room and find each object described by the clues. Tap the objects as you spot them. No matching — just careful observation.",
         skills: [
           "research",
           "observation",
@@ -144,7 +141,6 @@ export const MILESTONES = [
     title: "The Business of Becoming",
     place: "Postgraduate · IMT Ghaziabad",
     location: "Institute of Management Technology, Ghaziabad",
-    age: "22",
     art: "mba",
     sign: "IMT GHAZIABAD",
     arrival:
@@ -223,7 +219,6 @@ export const MILESTONES = [
     title: "Learning the Ground Game",
     place: "Emami · Kolkata",
     location: "Emami Limited, Kolkata",
-    age: "24–25",
     art: "kolkata",
     sign: "KOLKATA",
     arrival:
@@ -331,7 +326,6 @@ export const MILESTONES = [
     title: "Making Things Move",
     place: "Danone · Mumbai",
     location: "Danone, Mumbai",
-    age: "27",
     art: "mumbai",
     sign: "MUMBAI",
     arrival:

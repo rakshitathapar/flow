@@ -38,16 +38,11 @@ export default function GameShell({ game, children, onSkip }) {
         </div>
       </div>
       <div className="relative min-h-0 flex-1">{children}</div>
-      <div className="shrink-0 pb-2 pt-1 text-center">
-        <button
-          data-testid={`game-skip-${game.id}`}
-          className="font-hand text-lg text-[#6b5d49] underline decoration-dotted hover:text-[#c74a3c]"
-          onClick={() => {
-            sfx("page");
-            onSkip && onSkip();
-          }}
-        >
-          skip this activity
+      <div className="absolute right-3 top-[60px] sm:top-[64px] z-45">
+        <button data-testid={`game-skip-${game.id}`}
+          className="btn-hand btn-plain !px-4 !py-2 text-base sm:text-lg shadow-md"
+          onClick={() => { sfx("page"); onSkip && onSkip(); }}>
+          Skip this activity
         </button>
       </div>
       <AnimatePresence>

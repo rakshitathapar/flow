@@ -521,13 +521,6 @@ export const PROFILE = {
     "Experience across FMCG, healthcare, nutrition, personal care and e-commerce.",
     "Brand marketing, product innovation, e-commerce, commercial strategy, performance marketing and consumer understanding.",
   ],
-  contact: [
-    { label: "LinkedIn", value: "⟂ [LinkedIn URL — add yours]" },
-    { label: "Email", value: "⟂ [Email — add yours]" },
-    { label: "Resume", value: "⟂ [Resume link — add yours]" },
-    {
-      label: "Portfolio notes",
-      value: "⟂ [Other contact details — add yours]",
-    },
-  ],
+  contact: [],
+  links: { resume: "https://drive.google.com/file/d/1hbROcxKoDhnuwGuQKqaft9vassJQEOlt/view?usp=sharing", creativePortfolio: "https://drive.google.com/drive/folders/1H7QYKpikDd2kUVwTU-LpYM57skphRcno", email: "rakshitathapar25@gmail.com", phone: "+91 9990960383" },
 };

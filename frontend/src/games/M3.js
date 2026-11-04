@@ -141,247 +141,60 @@ const Sprite = ({ id, hue }) => {
 
 export function ObservationRoom({ onDone }) {
   const [found, setFound] = useState([]);
-  const [phase, setPhase] = useState("find"); // find | connect
-  const [sel, setSel] = useState(null);
-  const [linked, setLinked] = useState([]);
-  const [shake, setShake] = useState(null);
-  const [done, setDone] = useState(false);
   const [hintIdx, setHintIdx] = useState(-1);
   const idx = found.length;
   const cur = OBJECTS[idx];
-  const NAMES = {
-    photo: "the photograph",
-    diary: "the diary",
-    glasses: "the spectacles",
-    postcard: "the postcard",
-    textbook: "the textbook",
-    mug: "the coffee mug",
-  };
-
-  useEffect(() => {
-    if (found.length >= OBJECTS.length) {
-      sfx("chime");
-      setPhase("connect");
-    }
-  }, [found]);
 
   const tap = (id) => {
-    if (phase === "find") {
-      if (!cur || id !== cur.id) {
-        setShake(id);
-        sfx("click");
-        setTimeout(() => setShake(null), 500);
-        return;
-      }
-      sfx("pop");
-      setFound((f) => [...f, id]);
-    } else {
-      if (linked.flat().includes(id)) return;
-      if (!sel) {
-        setSel(id);
-        sfx("click");
-        return;
-      }
-      const ok = PAIRS.some(
-        (p) => (p[0] === sel && p[1] === id) || (p[1] === sel && p[0] === id),
-      );
-      if (ok) {
-        sfx("pop");
-        setLinked((l) => [...l, [sel, id]]);
-        setSel(null);
-        if (linked.length + 1 >= PAIRS.length)
-          setTimeout(() => {
-            sfx("tada");
-            setDone(true);
-          }, 600);
-      } else {
-        setShake(id);
-        sfx("click");
-        setTimeout(() => setShake(null), 500);
-        setSel(null);
-      }
+    if (found.includes(id)) return;
+    if (!cur || id !== cur.id) {
+      sfx("click");
+      return;
     }
+    sfx("pop");
+    setFound((items) => [...items, id]);
+    if (found.length + 1 === OBJECTS.length) setTimeout(() => sfx("tada"), 450);
   };
-
-  const objPos = (id) =>
-    id === "mug" ? MUG : OBJECTS.find((o) => o.id === id).at;
 
   return (
     <div className="absolute inset-0" style={{ background: "#e8ddd0" }}>
-      <div
-        className="scene-bg"
-        style={{
-          backgroundImage: `url(${ART.apartment})`,
-          filter: "saturate(0.92)",
-        }}
-      />
-      <div
-        className="absolute inset-0"
-        style={{ background: "rgba(43,38,32,0.14)" }}
-      />
-
-      {/* hidden objects — always haloed so they can be found; hint pulses the right one */}
+      <div className="scene-bg" style={{ backgroundImage: `url(${ART.apartment})`, filter: "saturate(0.92)" }} />
+      <div className="absolute inset-0 pointer-events-none" style={{ background: "rgba(43,38,32,0.12)" }} />
       {OBJECTS.map((o, i) => {
         const isFound = found.includes(o.id);
-        const isSel = sel === o.id;
         return (
-          <button
-            key={o.id}
-            data-testid={`obs-object-${o.id}`}
-            onClick={() => tap(o.id)}
-            className={`absolute tap-target ${shake === o.id ? "animate-[walkA_0.2s_linear_2]" : ""}`}
-            style={{ ...o.at, transform: "translate(-50%,-50%)" }}
-          >
-            <span
-              className={`absolute rounded-full border-[2.5px] ${isFound ? "border-solid border-[#5a9e6f]" : isSel ? "border-solid border-[#c74a3c]" : "border-dashed border-[rgba(253,246,233,0.9)]"}`}
-              style={{
-                inset: -13,
-                animation:
-                  i === hintIdx
-                    ? "pulseSoft 1.1s ease-in-out infinite"
-                    : undefined,
-              }}
-            />
-            <span
-              style={{
-                display: "block",
-                opacity: isFound ? 0.4 : 1,
-                filter: "drop-shadow(0 2px 3px rgba(43,38,32,0.55))",
-              }}
-            >
-              <span
-                style={{ display: "inline-block", transform: "scale(1.2)" }}
-              >
-                <Sprite id={o.id} hue={o.hue} />
-              </span>
+          <button key={o.id} data-testid={`obs-object-${o.id}`} onClick={() => tap(o.id)}
+            aria-label={isFound ? `${o.id} found` : `Inspect object ${i + 1}`}
+            className="absolute tap-target rounded-xl"
+            style={{ ...o.at, transform: "translate(-50%,-50%)", minWidth: 64, minHeight: 64,
+              background: isFound ? "rgba(90,158,111,.24)" : "rgba(253,246,233,.08)",
+              outline: hintIdx === i ? "3px dashed #e8a33d" : "none" }}>
+            <span className="block" style={{ opacity: isFound ? .48 : 1, filter: "drop-shadow(0 2px 3px rgba(43,38,32,.55))" }}>
+              <Sprite id={o.id} hue={o.hue} />
             </span>
-            {isFound && (
-              <span className="absolute -top-1 -right-1 rounded-full border-2 border-[#2b2620] bg-[#5a9e6f] w-5 h-5" />
-            )}
+            {isFound && <span className="absolute -top-1 -right-1 rounded-full border-2 border-[#2b2620] bg-[#5a9e6f] w-5 h-5" />}
           </button>
         );
       })}
-      {/* the mug (connect phase) */}
-      {phase === "connect" && (
-        <button
-          data-testid="obs-object-mug"
-          onClick={() => tap("mug")}
-          className="absolute tap-target"
-          style={{ ...MUG, transform: "translate(-50%,-50%)" }}
-        >
-          <span
-            className={`absolute rounded-full border-[2.5px] ${linked.flat().includes("mug") || linked.flat().includes("textbook") ? "border-solid border-[#5a9e6f]" : sel === "mug" ? "border-solid border-[#c74a3c]" : "border-dashed border-[rgba(253,246,233,0.9)]"}`}
-            style={{ inset: -13 }}
-          />
-          <span
-            style={{
-              display: "inline-block",
-              transform: "scale(1.2)",
-              filter: "drop-shadow(0 2px 3px rgba(43,38,32,0.55))",
-            }}
-          >
-            <svg width="48" height="48" viewBox="0 0 24 24">
-              <g
-                fill="none"
-                stroke="#2b2620"
-                strokeWidth="2.2"
-                strokeLinejoin="round"
-              >
-                <path
-                  d="M5 7h11v8a4 4 0 01-4 4H9a4 4 0 01-4-4z"
-                  fill="#c74a3c"
-                />
-                <path d="M16 9h2a2.5 2.5 0 010 5h-2" fill="#c74a3c" />
-                <path d="M8 4q1-1.5 2 0t2 0" />
-              </g>
-            </svg>
-          </span>
-        </button>
-      )}
-
-      {/* connection lines */}
-      {phase === "connect" && (
-        <svg
-          className="absolute inset-0 w-full h-full pointer-events-none"
-          style={{ overflow: "visible" }}
-        >
-          {linked.map(([a, b], i) => {
-            const pa = objPos(a),
-              pb = objPos(b);
-            return (
-              <line
-                key={i}
-                x1={pa.left}
-                y1={pa.top}
-                x2={pb.left}
-                y2={pb.top}
-                stroke="#c74a3c"
-                strokeWidth="4"
-                strokeDasharray="7 5"
-                style={{ filter: "drop-shadow(0 1px 0 rgba(43,38,32,0.8))" }}
-              />
-            );
-          })}
-        </svg>
-      )}
-
-      {/* clue card */}
       <div className="absolute bottom-3 left-1/2 -translate-x-1/2 w-[92%] max-w-xl">
-        <div
-          className="paper-card px-4 py-3"
-          style={{ transform: "rotate(-0.5deg)" }}
-          data-testid="obs-clue-card"
-        >
-          {phase === "find" ? (
-            <>
-              <div className="flex items-center justify-between gap-2">
-                <span className="font-hand text-xl text-[#7a4a3a]">
-                  Clue {Math.min(idx + 1, 5)} of 5
-                </span>
-                <div className="flex items-center gap-2">
-                  <ProgressPips total={5} done={found.length} />
-                  <button
-                    data-testid="obs-hint-button"
-                    className="btn-ghost !py-0.5 !px-2 text-xs"
-                    onClick={() => {
-                      setHintIdx(idx);
-                      sfx("click");
-                      setTimeout(() => setHintIdx(-1), 2800);
-                    }}
-                  >
-                    hint
-                  </button>
-                </div>
-              </div>
-              <div className="font-display font-extrabold text-lg sm:text-xl leading-snug">
-                “{cur ? cur.clue : "…"}”
-              </div>
-            </>
-          ) : (
-            <>
-              <div className="font-hand text-xl text-[#7a4a3a]">
-                Now connect what belongs together
-              </div>
-              <div className="font-body font-bold">
-                {linked.length}/3 pairs · tap one thing, then its partner
-              </div>
-              {sel && (
-                <div className="font-hand text-lg text-[#c74a3c]">
-                  selected: {NAMES[sel]} — now tap what it belongs with
-                </div>
-              )}
-            </>
-          )}
+        <div className="paper-card px-4 py-3" data-testid="obs-clue-card">
+          <div className="flex items-center justify-between gap-2">
+            <span className="font-hand text-xl text-[#7a4a3a]">Clue {Math.min(idx + 1, OBJECTS.length)} of {OBJECTS.length}</span>
+            <div className="flex items-center gap-2">
+              <ProgressPips total={OBJECTS.length} done={found.length} />
+              <button data-testid="obs-hint-button" className="btn-ghost !py-1 !px-3 text-sm"
+                onClick={() => { setHintIdx(idx); sfx("click"); setTimeout(() => setHintIdx(-1), 2800); }}>Hint</button>
+            </div>
+          </div>
+          <div className="font-display font-extrabold text-lg sm:text-xl leading-snug">
+            {cur ? `Find ${cur.clue}` : "All the clues are found."}
+          </div>
+          <div className="font-hand text-base text-[#7a4a3a]">{found.length} of {OBJECTS.length} clues found</div>
         </div>
       </div>
-
-      {done && (
-        <DoneOverlay
-          title="Five objects, three connections."
-          line="Observation is empathy's first draft — this is the muscle the dissertation trained for six months."
-          onContinue={onDone}
-        />
-      )}
+      {found.length === OBJECTS.length && <DoneOverlay title="Every detail tells a story."
+        line="Observation, curiosity and research begin with noticing what others might miss."
+        onContinue={onDone} />}
     </div>
   );
 }
